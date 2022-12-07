@@ -38,10 +38,10 @@ Detailed description for the trend analysis of Raster dataset
 ###	7.1 Convert the output .tiff to ascii
 `gdal_translate -of AAIGrid aot.tif aot.asc`
 
-# 7.2 Copy .asc text data in excel and apply prewhitening. Select scpecific row and coulmn you need to select and prewhitened it in Excel
+### 7.2 Copy .asc text data in excel and apply prewhitening. Select scpecific row and coulmn you need to select and prewhitened it in Excel
 `for i in *.asc; do echo awk 'FNR==(row number){print $(coulmn number)}' $i; done`
-# Replace the prewhitened values over normal values
+#### Replace the prewhitened values over normal values
 
-# 8. Convert back the .asc file to .tif; It will give the Prewhitened raster files.
+### 8. Convert back the .asc file to .tif; It will give the Prewhitened raster files.
 `gawk -i inplace -v repl="(file name)" 'FNR==(row number){getline $(coulmn number) < repl}1' *asc`
 
