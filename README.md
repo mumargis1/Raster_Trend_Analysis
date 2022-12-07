@@ -10,32 +10,32 @@ Detailed description for the trend analysis of Raster dataset
 
 
 ## Complete Steps:
-# 1. Import data in the GRASS GIS.
+### 1. Import data in the GRASS GIS.
 `for i in *.tif; do r.in.gdal input=$i output=$i;done`
 
-# 2. Create list of all dataset imported in GRASS GIS using:
+### 2. Create list of all dataset imported in GRASS GIS using:
 `for i in `g.list type=rast pat=*`; echo $i; done > filelist.txt`
 
-# 3. Create copy of created file contained name of all imported rasters
+### 3. Create copy of created file contained name of all imported rasters
 `cp filelist.txt filelist_lagged.txt`
 
-# 4. Go into the lagged.txt and remove the first file name and press backspace once.
+### 4. Go into the lagged.txt and remove the first file name and press backspace once.
 `cat filelist.txt | wc -l` # it will print number of lines in the text file
 
-#	5. Now create another files for  'r.regression.series' regression analysis (It will help in prewhitening; identifing raster cells with greated than 0.2 significant value
+###	5. Now create another files for  'r.regression.series' regression analysis (It will help in prewhitening; identifing raster cells with greated than 0.2 significant value
 `for i in `g.list type=rast pat=* sep=comma`; echo $i; done > filelistx.txt`
 `for i in `g.list type=rast pat=* sep=comma`; echo $i; done > filelisty.txt`
-#	remove the last one from filelistx.txt
-#	remove the first one from filelisty.txt
+###	remove the last one from filelistx.txt
+###	remove the first one from filelisty.txt
 
-# 6. Apply regression using command 
+### 6. Apply regression using command 
 `r.regression.series xseries=`sed -n ${i}p filelistx.txt` yseries==`sed -n ${i}p filelisty.txt` method=corcoef output=r1`
 
-#	It will help to do the following `x2-r1x1 … xn1-r1xnx` (prewhitning)
-# 7. Following are the method to do prewhiten the all raster cells; althought we need to prewhiten those time series that have higher values than significant value
+###	It will help to do the following `x2-r1x1 … xn1-r1xnx` (prewhitning)
+### 7. Following are the method to do prewhiten the all raster cells; althought we need to prewhiten those time series that have higher values than significant value
 `for i in `seq “mention your number of files here from 1 to as many as was printed by wc -l in line 6”` ; do x1=`sed -n ${i}p filelist.txt`; x2=`sed -n ${i}p filelist_lagged.txt`; r.mapcalc “x1.prewhitened=x2-corcoef*x1”; done`
 
-#	7.1 Convert the output .tiff to ascii
+###	7.1 Convert the output .tiff to ascii
 `gdal_translate -of AAIGrid aot.tif aot.asc`
 
 # 7.2 Copy .asc text data in excel and apply prewhitening. Select scpecific row and coulmn you need to select and prewhitened it in Excel
